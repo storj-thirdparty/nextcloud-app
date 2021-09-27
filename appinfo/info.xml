@@ -16,5 +16,9 @@
         <nextcloud min-version="20" max-version="22"/>
     </dependencies>
     <navigations>
+		<navigation>
+			<name>Storj</name>
+			<route>storj.page.index</route>
+		</navigation>
     </navigations>
 </info>
