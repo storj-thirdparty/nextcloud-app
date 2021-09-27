@@ -1,0 +1,49 @@
+{
+    "name": "erikvv/storj",
+    "description": "Distributed storage on the Storj network",
+    "type": "project",
+    "license": "AGPL",
+    "authors": [
+        {
+            "name": "Erik van Velzen"
+        }
+    ],
+    "require": {
+        "storj/uplink": "^0.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "repositories": {
+        "storj/uplink": {
+            "type": "package",
+            "package": {
+                "name": "storj/uplink",
+                "version": "0.1.0",
+                "license": "MIT/Expat",
+                "dist": {
+                    "url": "https://github.com/storj-thirdparty/uplink-php/releases/download/v0.1.0/release.zip",
+                    "type": "zip"
+                },
+                "autoload": {
+                    "psr-4": {
+                        "Storj\\Uplink\\": "src/"
+                    }
+                },
+                "autoload-dev": {
+                    "psr-4": {
+                        "Storj\\Uplink\\Test\\": "test/"
+                    }
+                },
+                "require": {
+                    "php": ">=7.4",
+                    "ext-ffi": "*",
+                    "psr/http-message": "^1.0"
+                },
+                "require-dev": {
+                    "phpunit/phpunit": "^9.2"
+                }
+            }
+        }
+    }
+}
