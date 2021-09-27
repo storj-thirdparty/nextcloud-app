@@ -52,7 +52,7 @@ class StorjObjectStore implements IObjectStore
 		return ReadProtocol::createReadResource($download);
 	}
 
-	public function writeObject($urn, $stream): void
+	public function writeObject($urn, $stream, string $mimetype = null): void
 	{
 		$this->logger->debug('Storj::writeObject("{urn}")', ['urn' => $urn]);
 

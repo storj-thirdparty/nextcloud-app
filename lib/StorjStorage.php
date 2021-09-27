@@ -71,7 +71,7 @@ class StorjStorage extends Common implements IObjectStore
 		return $this->storjObjectStore->readObject($urn);
 	}
 
-	public function writeObject($urn, $stream): void
+	public function writeObject($urn, $stream, string $mimetype = null): void
 	{
 		$this->storjObjectStore->writeObject($urn, $stream);
 	}
