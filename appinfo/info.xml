@@ -5,7 +5,7 @@
     <name>Storj</name>
     <summary>Storage backend built on Storj DCS.</summary>
     <description><![CDATA[A Storj Community contributed decentralized storage backend for Nextcloud built on Storj DCS.]]></description>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <licence>agpl</licence>
     <author mail="erik@evanv.nl" homepage="https://github.com/erikvv">Erik van Velzen</author>
     <namespace>Storj</namespace>

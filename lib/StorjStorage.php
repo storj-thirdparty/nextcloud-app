@@ -83,7 +83,7 @@ class StorjStorage extends Common implements IObjectStore
 
 	public function objectExists($urn): bool
 	{
-		return $this->objectExists($urn);
+		return $this->storjObjectStore->objectExists($urn);
 	}
 
 	public function copyObject($from, $to): void
@@ -143,7 +143,12 @@ class StorjStorage extends Common implements IObjectStore
 		$path = $this->normalizePath($path);
 		$path = "$path/";
 
-		$listObjectOptions = new ListObjectsOptions($path, '', false, true, true);
+		$listObjectOptions = (new ListObjectsOptions())
+			->withPrefix($path)
+			->withCursor('')
+			->withSystemMetadata(true)
+			->withCustomMetadata(true)
+			->withRecursive(false);
 
 		$objectInfoIterator = $this->project->listObjects($this->bucket, $listObjectOptions);
 
@@ -171,21 +176,25 @@ class StorjStorage extends Common implements IObjectStore
 			];
 		}
 
-		try {
-			$download = $this->project->downloadObject($this->bucket, $path);
-		} catch (UplinkException $e) {
-			$this->logger->error(
-				'Storj::stat("{path}") {exception} thrown "{message}"',
-				[
-					'path' => $path,
-					'exception' => get_class($e),
-					'message' => $e->getMessage(),
-				]
-			);
-			return false;
+		$objectInfo = $this->objectInfoCache->get($path);
+
+		if ($objectInfo === null) {
+			try {
+				$download = $this->project->downloadObject($this->bucket, $path);
+				$objectInfo = $download->info();
+			} catch (UplinkException $e) {
+				$this->logger->error(
+					'Storj::stat("{path}") {exception} thrown "{message}"',
+					[
+						'path' => $path,
+						'exception' => get_class($e),
+						'message' => $e->getMessage(),
+					]
+				);
+				return false;
+			}
 		}
 
-		$objectInfo = $download->info();
 		$systemMetadata = $objectInfo->getSystemMetadata();
 
 		return [
