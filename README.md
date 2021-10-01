@@ -22,8 +22,8 @@ Install from the app store or place this app in the folder `apps` of the nextclo
 
 Storj works like any external object storage. See the documentation on docs.nextcloud.com:
 
-* [Configuring Object Storage as Primary Storage](https://docs.nextcloud.com/server/20/admin_manual/configuration_files/primary_storage.html)
 * [Configuring External Storage (GUI)](https://docs.nextcloud.com/server/20/admin_manual/configuration_files/external_storage_configuration_gui.html)
+* [Configuring Object Storage as Primary Storage](https://docs.nextcloud.com/server/20/admin_manual/configuration_files/primary_storage.html)
 
 This is the configuration to set Storj as your primary storage:
 
@@ -39,7 +39,7 @@ $CONFIG = [
 ];
 ```
 
-Primary storage is more responsive.
+Primary storage is more responsive because it relies more on your local database, but does create small files, which is not the best usecase for Storj.
 
 ## Building
 

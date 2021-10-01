@@ -26,6 +26,7 @@ class StorjObjectStore implements IObjectStore
 	 */
 	public function __construct($params)
 	{
+		// using nextcloud as main storage fails if this is not present
 		Application::initAutoloader();
 
 		$this->logger = \OC::$server->get(LoggerInterface::class);

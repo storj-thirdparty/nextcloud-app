@@ -5,14 +5,16 @@
     <name>Storj</name>
     <summary>Storage backend built on Storj DCS.</summary>
     <description><![CDATA[A Storj Community contributed decentralized storage backend for Nextcloud built on Storj DCS.]]></description>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <licence>agpl</licence>
     <author mail="erik@evanv.nl" homepage="https://github.com/erikvv">Erik van Velzen</author>
     <namespace>Storj</namespace>
     <category>files</category>
     <category>integration</category>
     <bugs>https://github.com/storj-thirdparty/nextcloud-app/issues</bugs>
+    <screenshot>https://link.storjshare.io/raw/jvfizc37vgr5ohyxwreg7abnxxrq/nextcloud-app-assets/storj-logo.svg</screenshot>
     <dependencies>
+        <lib>FFI</lib>
         <nextcloud min-version="20" max-version="22"/>
     </dependencies>
     <navigations>

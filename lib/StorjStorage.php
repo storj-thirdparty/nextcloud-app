@@ -18,13 +18,10 @@ use Storj\Uplink\ObjectInfo;
 use Storj\Uplink\Project;
 use Storj\Uplink\StreamResource\WriteProtocol;
 use Storj\Uplink\Uplink;
+use Throwable;
 
 /**
  * Used when Storj is set as external storage through the GUI.
- *
- * This interface is pretty bad, it only returns primitives.
- * NextCloud will ask for different properties of the same remote object multiple times,
- * Therefor this object needs an internal cache for speed.
  */
 class StorjStorage extends Common implements IObjectStore
 {
@@ -37,6 +34,9 @@ class StorjStorage extends Common implements IObjectStore
 	protected StorjObjectStore $storjObjectStore;
 
 	/**
+	 * NextCloud will ask for different properties of the same remote object multiple times,
+	 * Therefor this object needs an internal cache for speed.
+	 *
 	 * @var ICache<ObjectInfo>
 	 */
 	protected ICache $objectInfoCache;
@@ -47,8 +47,6 @@ class StorjStorage extends Common implements IObjectStore
 	public function __construct($params)
 	{
 		parent::__construct($params);
-
-		Application::initAutoloader();
 
 		$this->logger = \OC::$server->get(LoggerInterface::class);
 		$this->objectInfoCache = new CappedMemoryCache();
@@ -73,7 +71,7 @@ class StorjStorage extends Common implements IObjectStore
 
 	public function writeObject($urn, $stream, string $mimetype = null): void
 	{
-		$this->storjObjectStore->writeObject($urn, $stream);
+		$this->storjObjectStore->writeObject($urn, $stream, $mimetype);
 	}
 
 	public function deleteObject($urn): void
@@ -108,6 +106,8 @@ class StorjStorage extends Common implements IObjectStore
 			    'ContentType' => 'application/vnd.storj.directory',
 		    ]);
 			$upload->commit();
+
+			$this->objectInfoCache->set($path, $upload->info());
 		} catch (UplinkException $e) {
 			$this->logger->error($e);
 			return false;
@@ -123,9 +123,27 @@ class StorjStorage extends Common implements IObjectStore
 		$path = $this->normalizePath($path);
 
 		try {
-			$this->project->deleteObject($this->bucket, $path);
+			$listOptions = (new ListObjectsOptions)
+				->withPrefix($path . '/')
+				->withRecursive(true);
+
+			foreach ($this->project->listObjects($this->bucket, $listOptions) as $object) {
+				$this->project->deleteObject($this->bucket, $object->getKey());
+				$this->objectInfoCache->remove($object->getKey());
+			}
+			
+			try {
+				$this->project->deleteObject($this->bucket, $path);
+			} catch (Throwable $e) {
+				// Null pointer error if it was a prefix
+				// TODO: fix in Uplink or Uplink-PHP
+			}
+			$this->objectInfoCache->remove($path);
 		} catch (UplinkException $e) {
-			$this->logger->error($e);
+			$this->logger->error('Error removing dir {path}: {error}', [
+				'path' => $path,
+				'error' => $e
+			]);
 			return false;
 		}
 
@@ -154,14 +172,13 @@ class StorjStorage extends Common implements IObjectStore
 
 		$filenames = [];
 		foreach ($objectInfoIterator as $objectInfo) {
-			$this->objectInfoCache->set($objectInfo->getKey(), $objectInfo);
+			$path = $this->normalizePath($objectInfo->getKey());
+			$this->objectInfoCache->set($path, $objectInfo);
 			$filenames[] = basename($objectInfo->getKey());
 		}
 
 		return IteratorDirectory::wrap($filenames);
 	}
-
-	private array $statCache = [];
 
 	public function stat($path)
 	{
@@ -182,6 +199,7 @@ class StorjStorage extends Common implements IObjectStore
 			try {
 				$download = $this->project->downloadObject($this->bucket, $path);
 				$objectInfo = $download->info();
+				$this->objectInfoCache->set($path, $objectInfo);
 			} catch (UplinkException $e) {
 				$this->logger->error(
 					'Storj::stat("{path}") {exception} thrown "{message}"',
@@ -264,7 +282,8 @@ class StorjStorage extends Common implements IObjectStore
 		}
 
 		try {
-			$this->project->downloadObject($this->bucket, $path);
+			$download = $this->project->downloadObject($this->bucket, $path);
+			$this->objectInfoCache->set($path, $download->info());
 			return true;
 		} catch (ObjectNotFound $e) {
 			return false;
