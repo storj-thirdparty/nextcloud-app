@@ -3,9 +3,46 @@
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>storj</id>
     <name>Storj</name>
-    <summary>Storage backend built on Storj DCS.</summary>
-    <description><![CDATA[A Storj Community contributed decentralized storage backend for Nextcloud built on Storj DCS.]]></description>
-    <version>0.0.3</version>
+    <summary>Decentralized storage backend</summary>
+    <description><![CDATA[External storage support for Storj Decentralized Cloud Storage.
+
+Made by the Storj community.
+
+## Prerequisites
+
+Currently only works on x64.
+
+The PHP installation should have the FFI extension loaded and enabled unconditionally in php.ini:
+
+```
+extension=ffi
+
+ffi.enable=true
+```
+
+## Configuration
+
+Storj works like any external object storage. See the documentation on docs.nextcloud.com:
+
+* [Configuring External Storage (GUI)](https://docs.nextcloud.com/server/22/admin_manual/configuration_files/external_storage_configuration_gui.html)
+* [Configuring Object Storage as Primary Storage](https://docs.nextcloud.com/server/20/admin_manual/configuration_files/primary_storage.html)
+
+This is the configuration to set Storj as your primary storage:
+
+```php
+$CONFIG = [
+    'objectstore' => [
+        'class' => \OCA\Storj\StorjObjectStore::class,
+        'arguments' => [
+            'serialized_access' => 'myaccessgrant',
+            'bucket' => 'mynextcloudbucket',
+        ]
+    ]
+];
+```
+
+]]></description>
+    <version>0.0.4</version>
     <licence>agpl</licence>
     <author mail="erik@evanv.nl" homepage="https://github.com/erikvv">Erik van Velzen</author>
     <namespace>Storj</namespace>

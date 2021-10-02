@@ -131,7 +131,7 @@ class StorjStorage extends Common implements IObjectStore
 				$this->project->deleteObject($this->bucket, $object->getKey());
 				$this->objectInfoCache->remove($object->getKey());
 			}
-			
+
 			try {
 				$this->project->deleteObject($this->bucket, $path);
 			} catch (Throwable $e) {

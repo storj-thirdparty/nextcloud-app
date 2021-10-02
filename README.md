@@ -1,10 +1,12 @@
 # Storj NextCloud App
 
-**EXPERIMENTAL**
+Adds external storage support for Storj Decentralized Cloud Storage.
 
-A Storj Community contributed decentralized storage backend for Nextcloud built on Storj DCS.
+Storj Community contributed.
 
 ## Prerequisites
+
+Currently only works on x64.
 
 The PHP installation should have the FFI extension loaded and enabled unconditionally in php.ini:
 
@@ -16,7 +18,7 @@ ffi.enable=true
 
 ## Installation
 
-Install from the app store or place this app in the folder `apps` of the nextcloud installation
+Install from the [App store](https://apps.nextcloud.com/apps/storj) or place this app in the folder `apps` of the nextcloud installation
 
 ## Configuration
 
@@ -72,7 +74,6 @@ or:
 
 for integration tests
 
-## Known issues and improvements
+## Known issues
 
-- Using external storage is slower than necessary because NextCloud request objects metadata separately during the same HTTP request. This can be improved by caching the results at the initial list operation. 
-- Under unknown circumstances a segfault seems to occur.
+- Enabling Xdebug profiling or debugging will cause a segfault

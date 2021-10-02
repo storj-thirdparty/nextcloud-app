@@ -2,6 +2,8 @@
 
 namespace OCA\Storj;
 
+use ErrorException;
+use Exception;
 use OCA\Files_External\Lib\DefinitionParameter;
 use OCA\Files_External\Lib\StorageConfig;
 use OCP\Files\StorageNotAvailableException;
@@ -33,15 +35,29 @@ class StorjBackend extends \OCA\Files_External\Lib\Backend\Backend
 		$accessGrant = $storage->getBackendOption('serialized_access');
 
 		try {
-			$uplink = Uplink::create();
-			$access = $uplink->parseAccess($accessGrant);
-			$project = $access->openProject();
-			$project->ensureBucket($bucket);
-		} catch (Throwable $exception) {
+			try {
+				$uplink = Uplink::create();
+				$access = $uplink->parseAccess($accessGrant);
+				$project = $access->openProject();
+				$project->ensureBucket($bucket);
+			} catch (\Error $e) {
+				// convert to exception or it will fail type check
+				throw new ErrorException(
+					$e->getMessage(),
+					$e->getCode(),
+					1,
+					$e->getFile(),
+					$e->getLine(),
+					$e
+				);
+			}
+		} catch (Exception $exception) {
 			// Will display important information for the user to fix the problemn
 			throw new StorageNotAvailableException(
 				$exception->getMessage(),
-				$exception->getCode(),
+				// code must be nonzero to display error icon
+				$exception->getCode() ?: 1,
+				$exception
 			);
 		}
 	}
