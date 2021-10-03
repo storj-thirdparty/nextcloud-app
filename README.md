@@ -6,7 +6,7 @@ Storj Community contributed.
 
 ## Prerequisites
 
-Currently only works on x64.
+Currently only works on x64 Linux. ARM64 support is coming.
 
 The PHP installation should have the FFI extension loaded and enabled unconditionally in php.ini:
 
@@ -15,6 +15,51 @@ extension=ffi
 
 ffi.enable=true
 ```
+
+Detailed instructions depend on your distro.
+
+### Detailed instructions for docker version of Nextcloud
+
+By default the Nextcloud docker image comes without `FFI` support. But you can install it inside the container:
+
+```
+docker exec -it nextcloud bash
+root@5f11b342df44:/var/www/html# apt update 
+root@5f11b342df44:/var/www/html# apt install libffi-dev
+root@5f11b342df44:/var/www/html# docker-php-ext-install ffi
+```
+
+("nextcloud" is the name you gave the container earlier)
+
+The extension is now enabled through `/usr/local/etc/php/conf.d/docker-php-ext-ffi.ini`
+
+Also allow loading libraries at runtime:
+
+```
+root@5f11b342df44:/var/www/html# echo ffi.enable=true > /usr/local/etc/php/conf.d/ffi.ini
+```
+
+Reload Apache:
+
+```
+root@5f11b342df44:/var/www/html# apachectl graceful
+```
+
+To make changes permanent you need to build your own image. Create a `Dockerfile`:
+
+```Dockerfile
+FROM nextcloud
+RUN apt update && apt install -y libffi-dev && docker-php-ext-install ffi
+RUN echo ffi.enable=true > /usr/local/etc/php/conf.d/ffi.ini
+```
+
+And build it:
+
+```
+docker build . -t my/nextcloud
+```
+
+Now you can run your own image, change `docker run ... nextcloud` to `docker run ... my/nextcloud`
 
 ## Installation
 
