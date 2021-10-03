@@ -35,6 +35,18 @@ Now you need to reload Apache
 root@5f11b342df44:/var/www/html# apachectl graceful
 ```
 
+To make changes permanent you need to build your own image. Create a `Dockerfile`:
+```Dockerfile
+FROM nextcloud
+RUN apt update && apt install libffi-dev -y && docker-php-ext-install ffi
+RUN sed 's/^;extension=ffi/extension=ffi/g; s/^;ffi.enable=preload/ffi.enable=true/g' /usr/local/etc/php/php.ini-production > /usr/local/etc/php/php.ini
+```
+And build it:
+```
+docker build . -t my/nextcloud
+```
+Now you can run your own image, replace `docker run ... nextcloud` to `docker run ... my/nextcloud`
+
 ## Installation
 
 Install from the app store or place this app in the folder `apps` of the nextcloud installation
