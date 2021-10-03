@@ -14,6 +14,27 @@ extension=ffi
 ffi.enable=true
 ```
 
+### Specific for docker version of Nextcloud
+By default the Nextcloud docker image comes without `FFI` support. But you can install it inside the container:
+```
+docker exec -it nextcloud bash
+root@5f11b342df44:/var/www/html# apt update && apt install libffi-dev
+root@5f11b342df44:/var/www/html# docker-php-ext-install ffi
+```
+Now you need to enable ffi in `php.ini`
+Copy `php.ini` template:
+```
+root@5f11b342df44:/var/www/html# cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+```
+And enable `ffi` extension:
+```
+root@5f11b342df44:/var/www/html# sed -i 's/^;extension=ffi/extension=ffi/g; s/^;ffi.enable=preload/ffi.enable=true/g' /usr/local/etc/php/php.ini
+```
+Now you need to reload Apache
+```
+root@5f11b342df44:/var/www/html# apachectl graceful
+```
+
 ## Installation
 
 Install from the app store or place this app in the folder `apps` of the nextcloud installation
