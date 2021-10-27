@@ -101,13 +101,9 @@ class StorjStorage extends Common implements IObjectStore
 		$path = $this->normalizePath($path);
 
 		try {
-			$upload = $this->project->uploadObject($this->bucket, $path);
-			$upload->setCustomMetadata([
-			    'ContentType' => 'application/vnd.storj.directory',
-		    ]);
+			// this is the same convention as the satellite object browser
+			$upload = $this->project->uploadObject($this->bucket, $path . '/.file_placeholder');
 			$upload->commit();
-
-			$this->objectInfoCache->set($path, $upload->info());
 		} catch (UplinkException $e) {
 			$this->logger->error($e);
 			return false;
@@ -132,12 +128,6 @@ class StorjStorage extends Common implements IObjectStore
 				$this->objectInfoCache->remove($object->getKey());
 			}
 
-			try {
-				$this->project->deleteObject($this->bucket, $path);
-			} catch (Throwable $e) {
-				// Null pointer error if it was a prefix
-				// TODO: fix in Uplink or Uplink-PHP
-			}
 			$this->objectInfoCache->remove($path);
 		} catch (UplinkException $e) {
 			$this->logger->error('Error removing dir {path}: {error}', [
@@ -174,7 +164,10 @@ class StorjStorage extends Common implements IObjectStore
 		foreach ($objectInfoIterator as $objectInfo) {
 			$path = $this->normalizePath($objectInfo->getKey());
 			$this->objectInfoCache->set($path, $objectInfo);
-			$filenames[] = basename($objectInfo->getKey());
+			$basename = basename($objectInfo->getKey());
+			if ($basename !== '.file_placeholder') {
+				$filenames[] = $basename;
+			}
 		}
 
 		return IteratorDirectory::wrap($filenames);
@@ -247,7 +240,15 @@ class StorjStorage extends Common implements IObjectStore
 					->downloadObject($this->bucket, $path)
 					->info();
 			} catch (ObjectNotFound $e) {
-				return false;
+				// its not an object, check if it's a prefix
+				$objects = $this->project->listObjects($this->bucket, (new ListObjectsOptions())
+					->withPrefix($path . '/'));
+				if ($objects->valid()) {
+					return 'dir';
+				} else {
+					// its neither an object nor a prefix: it doesn't exist
+					return false;
+				}
 			}
 		}
 
@@ -256,9 +257,11 @@ class StorjStorage extends Common implements IObjectStore
 			return 'dir';
 		}
 
+		// this is an old approach, remove at some point
 		if (($objectInfo->getCustomMetadata()['ContentType'] ?? null)
 			=== 'application/vnd.storj.directory') {
-			$this->logger->debug("$path is dir");
+			$this->logger->debug("$path is legacy dir, removing");
+			$this->project->deleteObject($this->bucket, $path );
 			return 'dir';
 		}
 
@@ -281,13 +284,7 @@ class StorjStorage extends Common implements IObjectStore
 			return true;
 		}
 
-		try {
-			$download = $this->project->downloadObject($this->bucket, $path);
-			$this->objectInfoCache->set($path, $download->info());
-			return true;
-		} catch (ObjectNotFound $e) {
-			return false;
-		}
+		return $this->filetype($path) !== false;
 	}
 
 	public function unlink($path)
