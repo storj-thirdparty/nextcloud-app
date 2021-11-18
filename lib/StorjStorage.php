@@ -4,6 +4,7 @@
 namespace OCA\Storj;
 
 
+use Generator;
 use Icewind\Streams\IteratorDirectory;
 use OC\Cache\CappedMemoryCache;
 use OC\Files\Storage\Common;
@@ -19,6 +20,7 @@ use Storj\Uplink\Project;
 use Storj\Uplink\StreamResource\WriteProtocol;
 use Storj\Uplink\Uplink;
 use Throwable;
+use function Sabre\Xml\Deserializer\functionCaller;
 
 /**
  * Used when Storj is set as external storage through the GUI.
@@ -149,7 +151,9 @@ class StorjStorage extends Common implements IObjectStore
 		$this->logger->debug('Storj::opendir("{path}")', ['path' => $path]);
 
 		$path = $this->normalizePath($path);
-		$path = "$path/";
+		if ($path !== "") {
+			$path = "$path/";
+		}
 
 		$listObjectOptions = (new ListObjectsOptions())
 			->withPrefix($path)
@@ -160,17 +164,18 @@ class StorjStorage extends Common implements IObjectStore
 
 		$objectInfoIterator = $this->project->listObjects($this->bucket, $listObjectOptions);
 
-		$filenames = [];
-		foreach ($objectInfoIterator as $objectInfo) {
-			$path = $this->normalizePath($objectInfo->getKey());
-			$this->objectInfoCache->set($path, $objectInfo);
-			$basename = basename($objectInfo->getKey());
-			if ($basename !== '.file_placeholder') {
-				$filenames[] = $basename;
+		$iterator = function() use ($objectInfoIterator): Generator {
+			foreach ($objectInfoIterator as $objectInfo) {
+				$path = $this->normalizePath($objectInfo->getKey());
+				$this->objectInfoCache->set($path, $objectInfo);
+				$basename = basename($objectInfo->getKey());
+				if ($basename !== '.file_placeholder') {
+					yield $basename;
+				}
 			}
-		}
+		};
 
-		return IteratorDirectory::wrap($filenames);
+		return IteratorDirectory::wrap($iterator());
 	}
 
 	public function stat($path)
