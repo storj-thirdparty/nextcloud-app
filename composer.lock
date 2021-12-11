@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e47cfacfdae1039a97b391671706a51",
+    "content-hash": "8986dbb6667bcc9cbd6448c9ae5874e4",
     "packages": [
         {
             "name": "psr/http-message",
@@ -61,10 +61,10 @@
         },
         {
             "name": "storj/uplink",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "dist": {
                 "type": "zip",
-                "url": "https://link.us1.storjshare.io/raw/jxmgbsqc4k2bbhuv27556pcoh7ra/uplink-php-releases/uplink-php-v1.0.0.zip"
+                "url": "https://link.us1.storjshare.io/raw/jxmgbsqc4k2bbhuv27556pcoh7ra/uplink-php-releases/uplink-php-v1.1.0.zip"
             },
             "require": {
                 "ext-ffi": "*",

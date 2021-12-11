@@ -52,7 +52,7 @@ $CONFIG = [
     <screenshot>https://link.storjshare.io/raw/jvfizc37vgr5ohyxwreg7abnxxrq/nextcloud-app-assets/storj-logo.svg</screenshot>
     <dependencies>
         <lib>FFI</lib>
-        <nextcloud min-version="20" max-version="22"/>
+        <nextcloud min-version="20" max-version="23"/>
     </dependencies>
     <navigations>
 		<navigation>
