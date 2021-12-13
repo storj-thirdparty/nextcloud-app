@@ -30,12 +30,7 @@ class StorjObjectStore implements IObjectStore
 		Application::initAutoloader();
 
 		$this->logger = \OC::$server->get(LoggerInterface::class);
-
-		$uplink = Uplink::create();
-		$access = $uplink->parseAccess($params['serialized_access']);
-
-		// TODO: this is an expensive operation which maybe shouldn't be in the constructor
-		$this->project = $access->openProject();
+		$this->project = ProjectFactory::fromParams($params);
 		$this->bucket = $params['bucket'];
 	}
 

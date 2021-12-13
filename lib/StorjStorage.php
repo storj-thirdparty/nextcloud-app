@@ -43,9 +43,6 @@ class StorjStorage extends Common implements IObjectStore
 	 */
 	protected ICache $objectInfoCache;
 
-	/**
-	 * @param array $params
-	 */
 	public function __construct($params)
 	{
 		parent::__construct($params);
@@ -53,11 +50,12 @@ class StorjStorage extends Common implements IObjectStore
 		$this->logger = \OC::$server->get(LoggerInterface::class);
 		$this->objectInfoCache = new CappedMemoryCache();
 
-		$uplink = Uplink::create();
-		$access = $uplink->parseAccess($params['serialized_access']);
+		$project = ProjectFactory::fromParams($params);
 
-		$this->project = $access->openProject();
+		$this->project = $project;
 		$this->bucket = $params['bucket'];
+
+		$params['project'] = $project;
 		$this->storjObjectStore = new StorjObjectStore($params);
 	}
 
