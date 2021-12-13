@@ -104,6 +104,8 @@ class StorjStorage extends Common implements IObjectStore
 			// this is the same convention as the satellite object browser
 			$upload = $this->project->uploadObject($this->bucket, $path . '/.file_placeholder');
 			$upload->commit();
+			$objectInfo = new ObjectInfo($path, true, null, null);
+			$this->objectInfoCache->set($path, $objectInfo);
 		} catch (UplinkException $e) {
 			$this->logger->error($e);
 			return false;
@@ -239,11 +241,14 @@ class StorjStorage extends Common implements IObjectStore
 		if ($objectInfo === null) {
 			try {
 				$objectInfo = $this->project->statObject($this->bucket, $path);
+				$this->objectInfoCache->set($path, $objectInfo);
 			} catch (ObjectNotFound $e) {
 				// its not an object, check if it's a prefix
 				$objects = $this->project->listObjects($this->bucket, (new ListObjectsOptions())
 					->withPrefix($path . '/'));
 				if ($objects->valid()) {
+					$objectInfo = new ObjectInfo($path, true, null, null);
+					$this->objectInfoCache->set($path, $objectInfo);
 					return 'dir';
 				} else {
 					// its neither an object nor a prefix: it doesn't exist
@@ -261,7 +266,7 @@ class StorjStorage extends Common implements IObjectStore
 		if (($objectInfo->getCustomMetadata()['ContentType'] ?? null)
 			=== 'application/vnd.storj.directory') {
 			$this->logger->debug("$path is legacy dir, removing");
-			$this->project->deleteObject($this->bucket, $path );
+			$this->project->deleteObject($this->bucket, $path);
 			return 'dir';
 		}
 
