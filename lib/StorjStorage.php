@@ -193,8 +193,7 @@ class StorjStorage extends Common implements IObjectStore
 
 		if ($objectInfo === null) {
 			try {
-				$download = $this->project->downloadObject($this->bucket, $path);
-				$objectInfo = $download->info();
+				$objectInfo = $this->project->statObject($this->bucket, $path);
 				$this->objectInfoCache->set($path, $objectInfo);
 			} catch (UplinkException $e) {
 				$this->logger->error(
@@ -239,9 +238,7 @@ class StorjStorage extends Common implements IObjectStore
 
 		if ($objectInfo === null) {
 			try {
-				$objectInfo = $this->project
-					->downloadObject($this->bucket, $path)
-					->info();
+				$objectInfo = $this->project->statObject($this->bucket, $path);
 			} catch (ObjectNotFound $e) {
 				// its not an object, check if it's a prefix
 				$objects = $this->project->listObjects($this->bucket, (new ListObjectsOptions())

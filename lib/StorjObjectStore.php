@@ -70,7 +70,7 @@ class StorjObjectStore implements IObjectStore
 		$this->logger->debug('Storj::objectExists("{urn}")', ['urn' => $urn]);
 
 		try {
-			$this->project->downloadObject($this->bucket, $urn);
+			$this->project->statObject($this->bucket, $urn);
 			return true;
 		} catch (ObjectNotFound $e) {
 			return false;
