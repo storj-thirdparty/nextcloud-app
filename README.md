@@ -4,9 +4,18 @@ Adds external storage support for Storj Decentralized Cloud Storage.
 
 Storj Community contributed.
 
+* [Prerequisites](#prerequisites)
+	* [Detailed instructions for docker version of Nextcloud](#detailed-instructions-for-docker-version-of-nextcloud)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Building](#building)
+* [Publish to App Store](#publish-to-app-store)
+* [Running tests](#running-tests)
+* [Known issues](#known-issues)
+
 ## Prerequisites
 
-Currently only works on x64 Linux. ARM64 support is coming.
+Linux. x86_64 or ARM64. libffi installed.
 
 The PHP installation should have the FFI extension loaded and enabled unconditionally in php.ini:
 
