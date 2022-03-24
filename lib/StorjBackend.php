@@ -9,8 +9,6 @@ use OCA\Files_External\Lib\StorageConfig;
 use OCP\Files\StorageNotAvailableException;
 use OCP\IL10N;
 use OCP\IUser;
-use Storj\Uplink\Uplink;
-use Throwable;
 
 class StorjBackend extends \OCA\Files_External\Lib\Backend\Backend
 {
@@ -36,9 +34,7 @@ class StorjBackend extends \OCA\Files_External\Lib\Backend\Backend
 
 		try {
 			try {
-				$uplink = Uplink::create();
-				$access = $uplink->parseAccess($accessGrant);
-				$project = $access->openProject();
+				$project = ProjectFactory::fromSerializedAccess($accessGrant);
 				$project->ensureBucket($bucket);
 			} catch (\Error $e) {
 				// convert to exception or it will fail type check
