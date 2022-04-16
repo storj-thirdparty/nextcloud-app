@@ -105,13 +105,17 @@ The app can be built by using the provided Makefile by running:
 
 ## Publish to App Store
 
-First get an account for the [App Store](http://apps.nextcloud.com/) then run:
+Bump the version in [./appinfo/info.xml](./appinfo/info.xml)
+
+Build un:
 
     make && make appstore
 
-The archive is located in build/artifacts/appstore and can then be uploaded to the App Store.
+The archive is located in build/artifacts/appstore. 
+Follow the instructions at [https://apps.nextcloud.com/developer/apps/releases/new](http://apps.nextcloud.com/) to upload the app to the store.
 
 ## Running tests
+
 You can use the provided Makefile to run all tests by using:
 
     make test

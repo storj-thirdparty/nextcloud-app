@@ -42,7 +42,7 @@ $CONFIG = [
 ```
 
 ]]></description>
-    <version>0.0.7</version>
+    <version>0.0.8</version>
     <licence>agpl</licence>
     <author mail="erik@evanv.nl" homepage="https://github.com/erikvv">Erik van Velzen</author>
     <namespace>Storj</namespace>
@@ -54,10 +54,4 @@ $CONFIG = [
         <lib>FFI</lib>
         <nextcloud min-version="20" max-version="23"/>
     </dependencies>
-    <navigations>
-		<navigation>
-			<name>Storj</name>
-			<route>storj.page.index</route>
-		</navigation>
-    </navigations>
 </info>
