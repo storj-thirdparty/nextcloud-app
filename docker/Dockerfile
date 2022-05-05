@@ -1,5 +1,7 @@
 ## extend and re-publish nextcloud container with Storj app pre-installed
-FROM nextcloud:23.0.3-apache
+ARG VARIANT=apache
+ARG NEXTCLOUD_VERSION
+FROM nextcloud:${NEXTCLOUD_VERSION}-${VARIANT}
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions
