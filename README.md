@@ -20,7 +20,7 @@ Storj Community contributed.
 We supply a ready-to-use Docker image with Nextcloud and Storj pre-installed. 
 
 ```
-docker run storjthirdparty/nextcloud-app \
+docker run storjthirdparty/nextcloud-app:23.0.4-apache \
     --env OBJECTSTORE_STORJ_ACCESS_GRANT=myaccessgrant \
     --env OBJECTSTORE_STORJ_BUCKET=mybucket
 ```
