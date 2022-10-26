@@ -20,7 +20,7 @@ class ProjectFactory
 		return Uplink::create()
 			->parseAccess($serializedAccess)
 			->openProject(
-				(new Config())->withUserAgent("nextcloud uplink-php")
+				(new Config())->prependUserAgent("nextcloud")
 			);
 	}
 }
