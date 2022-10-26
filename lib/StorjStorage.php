@@ -354,7 +354,22 @@ class StorjStorage extends Common implements IObjectStore
 	{
 		$this->logger->debug('Storj::touch("{path}")', ['path' => $path]);
 
-		return false;
+		$path = $this->normalizePath($path);
+
+		if ($this->file_exists($path)) {
+			// matches native PHP touch behavior
+			return true;
+		}
+
+		try {
+			$upload = $this->project->uploadObject($this->bucket, $path);
+			$upload->commit();
+		} catch (UplinkException $e) {
+			$this->logger->error($e->getMessage());
+			return false;
+		}
+
+		return true;
 	}
 
 	private function normalizePath($path)

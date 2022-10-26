@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8986dbb6667bcc9cbd6448c9ae5874e4",
+    "content-hash": "787d0239a031d8c2f3724b82028a0e1f",
     "packages": [
         {
             "name": "psr/http-message",
@@ -61,10 +61,10 @@
         },
         {
             "name": "storj/uplink",
-            "version": "1.1.0",
+            "version": "1.3.0",
             "dist": {
                 "type": "zip",
-                "url": "https://link.us1.storjshare.io/raw/jxmgbsqc4k2bbhuv27556pcoh7ra/uplink-php-releases/uplink-php-v1.1.0.zip"
+                "url": "https://link.storjshare.io/raw/jxmgbsqc4k2bbhuv27556pcoh7ra/uplink-php-releases/uplink-php-v1.3.0.zip"
             },
             "require": {
                 "ext-ffi": "*",
@@ -87,7 +87,15 @@
             },
             "license": [
                 "MIT/Expat"
-            ]
+            ],
+            "authors": [
+                {
+                    "name": "Erik van Velzen",
+                    "email": "erik@evanv.nl"
+                }
+            ],
+            "description": "Storj DCS client",
+            "homepage": "https://github.com/storj-thirdparty/uplink-php"
         }
     ],
     "packages-dev": [
@@ -2192,5 +2200,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
