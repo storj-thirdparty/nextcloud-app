@@ -124,6 +124,7 @@ source:
 # Builds the source package for the app store, ignores php and js tests
 .PHONY: appstore
 appstore:
+	php sync-readme.php
 	composer install --optimize-autoloader --no-dev
 	rm -rf $(appstore_build_directory)
 	mkdir -p $(appstore_build_directory)
