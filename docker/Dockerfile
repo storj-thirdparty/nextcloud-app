@@ -14,6 +14,6 @@ COPY storj.config.php /usr/src/nextcloud/config/storj.config.php
 
 RUN mkdir -p /usr/src/nextcloud/apps \
     && cd /usr/src/nextcloud/apps \
-    && curl --output storj.tar.gz https://link.storjshare.io/raw/jvfizc37vgr5ohyxwreg7abnxxrq/nextcloud-app-assets/storj-v0.0.8.tar.gz \
+    && curl --output storj.tar.gz https://link.storjshare.io/raw/jvfizc37vgr5ohyxwreg7abnxxrq/nextcloud-app-assets/storj-v0.0.9.tar.gz \
     && tar -x -f storj.tar.gz \
     && rm storj.tar.gz

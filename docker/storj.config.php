@@ -2,9 +2,9 @@
 
 if (getenv('OBJECTSTORE_STORJ_BUCKET')) {
 	$CONFIG = [
-		'app_install_overwrite' => [
-			'storj',
-		],
+//		'app_install_overwrite' => [
+//			'storj',
+//		],
 	    'objectstore' => [
 			'class' => \OCA\Storj\StorjObjectStore::class,
 			'arguments' => [
